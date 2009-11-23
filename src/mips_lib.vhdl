@@ -32,12 +32,15 @@ package mips_lib is
     constant sltFunc    : bit_vector(5 downto 0) :="101010";
     constant sllFunc    : bit_vector(5 downto 0) :="000000";
 
+    constant UDEXP      : std_logic_vector(31 downto 0) := x"00000003";
+    constant OVFEXP     : std_logic_vector(31 downto 0) := x"00000001";
+
 
 
     type t_aluSrcA    is (ASA_PC, ASA_REG_A);
     type t_aluSrcB    is (ASB_REGB, ASB_FOUR, ASB_SEXT, ASB_SEXTS);
     type t_aluOp      is (AOP_AND, AOP_OR, AOP_ADD, AOP_SUB, AOP_SLT, AOP_NOR, AOP_SLL);
-    type t_pcSrc      is (PS_PCINC, PS_ALUOUT, PS_JMP);
+    type t_pcSrc      is (PS_PCINC, PS_ALUOUT, PS_JMP, PS_FOUR);
     type t_regDst     is (RD_RT, RD_RD, RD_RA);
     type t_iord       is (IOD_PC, IOD_ALUOUT);
     type t_memToReg   is (MTR_ALUOUT, MTR_MDR, MTR_PC);

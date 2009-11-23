@@ -28,6 +28,7 @@ Architecture LW_Testbench_1 of LW_Testbench is
             clk           : in std_logic;
     -- Control Unit
             PCWriteCondEq : in std_logic;
+            PCWriteCondNEq : in std_logic;
             PCWrite       : in std_logic;
             IorD          : in t_iord;
             MemRead       : in std_logic;
@@ -40,7 +41,9 @@ Architecture LW_Testbench_1 of LW_Testbench is
             ALUSrcB       : in t_aluSrcB;
             PCSource      : in t_pcSrc;
             ALUOp         : in t_aluOp;
-
+            UndefInstrEx  : in std_logic;
+            OverflowEx    : out std_logic;
+            Exception     : in std_logic;
     --Memory
             mem_data_out   : in  std_logic_vector((DATA_WIDTH-1) downto 0);
             mem_read       : out std_logic;
@@ -50,6 +53,7 @@ Architecture LW_Testbench_1 of LW_Testbench is
     end component datapath;
 
     signal PCWriteCondEq : std_logic;
+    signal PCWriteCondNEq : std_logic;
     signal PCWrite       : std_logic;
     signal IorD          : t_iord;
     signal MemRead       : std_logic;
@@ -62,7 +66,9 @@ Architecture LW_Testbench_1 of LW_Testbench is
     signal ALUSrcB       : t_aluSrcB;
     signal PCSource      : t_pcSrc;
     signal ALUOp         : t_aluOp;
-
+    signal UndefInstrEx  : std_logic;
+    signal OverflowEx    : std_logic;
+    signal Exception     : std_logic;
  --Memory
     signal mem_data_out   : std_logic_vector((DATA_WIDTH-1) downto 0);
     signal mem_read       : std_logic;
@@ -83,6 +89,7 @@ begin
     port map(
                 clk           => clk,
                 PCWriteCondEq => PCWriteCondEq,
+                PCWriteCondNEq => PCWriteCondNEq,
                 PCWrite       => PCWrite,
                 IorD          => IorD,
                 MemRead       => MemRead,
@@ -95,6 +102,9 @@ begin
                 ALUSrcB       => ALUSrcB,
                 PCSource      => PCSource,
                 ALUOp         => ALUOp,
+                UndefInstrEx  => UndefInstrEx,
+                OverflowEx    => OverflowEx,
+                Exception     => Exception,
 
                 mem_data_out   => mem_data_out,
                 mem_read       => mem_read,
@@ -105,6 +115,7 @@ begin
     PROCESS
     BEGIN
         PCWriteCondEq <= '0';
+        PCWriteCondNEq <= '0';
         PCWrite <= '0';
         IorD <= IOD_PC;
         MemRead <= '0';

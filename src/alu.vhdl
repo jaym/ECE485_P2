@@ -21,7 +21,8 @@ port
     shamt    : in std_logic_vector(4 downto 0);
     alu_ctrl : in t_aluOp;
     f        : out std_logic_vector(31 downto 0);
-    zero     : out std_logic
+    zero     : out std_logic;
+    overflow : out std_logic
 );
 end entity;
 

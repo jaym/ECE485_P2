@@ -12,6 +12,7 @@
 \usepackage{listings}
 \usepackage{color}
 \usepackage{multirow}
+\usepackage{url}
 
 \begin{document}
 
@@ -45,6 +46,7 @@ For this project, we were to implement the following instructions:
   \item JAL
 \end{itemize}
 The source code for this datapath is available in the appendix and in a git repository on github.
+This is available at \url{http://github.com/whois/ECE485_P2}.
 \section{Design}
 The design for a multicycle MIPS datapath is quite simple. It is shown in Figure \ref{fig:datapath}.
 The data path has the following signals
@@ -226,7 +228,7 @@ $0x00FF$ is being added to $R0$ as specified by the instruction. The ALU outputs
 the memory access\dots nothing happens here since the value of memory is kept constant for simplicity. Next,
 in the final clock cycle, the write back occurs, and $R1$ gets the value of the memory.
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \includegraphics[width=6.5in]{images/LW.eps}
   \caption{Shows the execution of a LW instruction}
@@ -236,7 +238,7 @@ in the final clock cycle, the write back occurs, and $R1$ gets the value of the 
 Similarly, Figure \ref{fig:sw} shows the operation of SW. The first 4 cycles behave the same way. The final
 cycle is different in that it asserts a MemWrite signal and writes the data to memory.
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \includegraphics[width=6.5in]{images/SW.eps}
   \caption{Shows the execution of a SW instruction}
@@ -255,7 +257,7 @@ ALU takes the values read from the register file and performs and add on them. A
 cycle, write\_data has the value of $R0 + R1$. In the next cycle, the write back cycle,
 $R2 <= R0 + R1$ as expected.
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \includegraphics[width=6.5in]{images/ADD.eps}
   \caption{Shows the execution of a add instruction}
@@ -268,7 +270,7 @@ The first clock cycle is the reset, followed by the IF, followed by ID, followed
 In the execution, ALUSrcA is irrelevant. Operand B(R1) is '1', which will be left shifted by the amount
 of 2. Thus, the expected value is 4, and that is the value that is written back in the final clock cycle.
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \includegraphics[width=6.5in]{images/SLL.eps}
   \caption{Shows the execution of a SLL instruction}
@@ -278,32 +280,32 @@ of 2. Thus, the expected value is 4, and that is the value that is written back 
 The following are the figures for SUB, AND, OR, and SLT. Whats important to look at in these instructions
 are the operands and the final write back values. With that, it can be seen that each functions correctly.
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \includegraphics[width=6.5in]{images/SUB.eps}
   \caption{Shows the execution of a SUB instruction}
   \label{fig:sub}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \includegraphics[width=6.5in]{images/AND.eps}
   \caption{Shows the execution of a AND instruction}
   \label{fig:and}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \includegraphics[width=6.5in]{images/OR.eps}
   \caption{Shows the execution of a OR instruction}
   \label{fig:or}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \includegraphics[width=6.5in]{images/SLT.eps}
   \caption{Shows the execution of a SLT instruction}
-  \label{fig:or}
+  \label{fig:slt}
 \end{figure}
 
 \subsection{Immediate Instruction}
@@ -312,7 +314,7 @@ that ALUSrcB is set to use the sign extended lower 16 bits of the instruction. I
 in Figure \ref{fig:addi}. The first cycle is reset, the second is instruction fetch, third is instruction
 decode, fourth is execution. The lower 16 bits of this instruction are 8, which is being added to
 $R0$. The final clock cycle shows that 8 is written back as expected.
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \includegraphics[width=6.5in]{images/ADDI.eps}
   \caption{Shows the execution of a ADDI instruction}
@@ -332,7 +334,7 @@ with those signals, BNE needs to assert the PCWriteCondNEq signal to indicate a 
 The branch occurs in the execution stage, as that is when PC is written with its new value. In Figure
 \ref{fig:bne}, the lower 16 bits are 2. Sign extended and shifted left by two makes 8. Thus, $PC + 4 + 8 = C$,
 as the original PC started off at 0. This is the value that is written to the PC as can be seen.
-\begin{figure}[h!]
+\begin{figure}[H]
   \centering
   \includegraphics[width=6.5in]{images/BNEQ.eps}
   \caption{Shows the execution of a BNE instruction}
@@ -345,7 +347,7 @@ It also writes the value of the PC to $R31$. The instruction if Figure \ref{fig:
 PC as expected into $R31$ in the final clock cycle. The lower 26 bits of the instruction are 8, thus $0x20$
 is the expected jump value, the same value that PC gets in the final clock cycle.
 
-\begin{figure}[h!]
+\begin{figure}[H]
   \centering
   \includegraphics[width=6.5in]{images/JAL.eps}
   \caption{Shows the execution of a JAL instruction}
@@ -353,52 +355,77 @@ is the expected jump value, the same value that PC gets in the final clock cycle
 \end{figure}
 
 The following figures(\ref{fig:jal} and \ref{fig:beq} show similar instructions J and BEQ.
-\begin{figure}[h!]
+\begin{figure}[H]
   \centering
   \includegraphics[width=6.5in]{images/J.eps}
   \caption{Shows the execution of a J instruction}
   \label{fig:j}
 \end{figure}
-\begin{figure}[h!]
+\begin{figure}[H]
   \centering
   \includegraphics[width=6.5in]{images/BEQ.eps}
   \caption{Shows the execution of a BEQ instruction}
   \label{fig:beq}
 \end{figure}
 
+\subsection{LUI}
+Since the ALU already has the capability to do shift operations on ALU port B operands, nothing needs to be added to the datapath.
+This instruction can be executed by 3 instructions already described. The instructions needed are SLL, which is done by 16 bits. Next,
+we can use an AND the lower upper 16 bits of the register we want to LUI into with 1's. This clears out the top bits. This leaves one
+final OR with the result of SLL and the register we want to LUI into.
+
+\subsection{Exception Handling}
+Exception handling requires two additional registers and addition control signals. The registers needed are the cause register and the EPC.
+This datapath must allow for two different types of exceptions. First, the arithmetic overflow exception. This can only occur during the
+execution stage, and may not be caused by the control unit. The second is undefined instruction. Here, there are two possibilities. First,
+there can be an unkwown opcode. Second, there can be an unknown function for an R-Type. The design here is to let the ALU assert arithmetic
+overflow exceptions, and the control unit will assert the unknown operation exception. When these are asserted, there will be a jump to
+some hard-wired memory address, in this case $0x4$ for simplicity.
+
+
+\section{Unfinished}
+\begin{enumerate}
+  \item ALU does not generate overflow
+  \item There is no testbench for exception handling
+\end{enumerate}
+
 
 \appendix
-%\section{Code}
+\section{Code}
 
 
-%\lstset{ %
-%language=VHDL,                % choose the language of the code
-%basicstyle=\footnotesize,
-%numbers=left,                   % where to put the line-numbers
-%stepnumber=1,                   % the step between two line-numbers. If it's 1 each line will be numbered
-%numbersep=10pt,                  % how far the line-numbers are from the code
-%showspaces=false,               % show spaces adding particular underscores
-%showstringspaces=false,         % underline spaces within strings
-%showtabs=false,                 % show tabs within strings adding particular underscores
-%frame=shadowbox,	                % adds a frame around the code
-%tabsize=2,	                % sets default tabsize to 2 spaces
-%captionpos=b,                   % sets the caption-position to bottom
-%breaklines=true,                % sets automatic line breaking
-%breakatwhitespace=false        % sets if automatic breaks should only happen at whitespace
-%}
+\lstset{ %
+language=VHDL,                % choose the language of the code
+basicstyle=\footnotesize,
+numbers=left,                   % where to put the line-numbers
+stepnumber=1,                   % the step between two line-numbers. If it's 1 each line will be numbered
+numbersep=10pt,                  % how far the line-numbers are from the code
+showspaces=false,               % show spaces adding particular underscores
+showstringspaces=false,         % underline spaces within strings
+showtabs=false,                 % show tabs within strings adding particular underscores
+frame=shadowbox,	                % adds a frame around the code
+tabsize=2,	                % sets default tabsize to 2 spaces
+captionpos=b,                   % sets the caption-position to bottom
+breaklines=true,                % sets automatic line breaking
+breakatwhitespace=false        % sets if automatic breaks should only happen at whitespace
+}
 
 
-%\lstset{caption=and4.vhdl,label=and4}
-%\lstinputlisting{src/and4.vhdl}
+\lstset{caption=mips\_lib.vhdl,label=lst:mipslib}
+\lstinputlisting{src/mips_lib.vhdl}
 
-%\lstset{caption=invert.vhdl,label=invert}
-%\lstinputlisting{src/invert.vhdl}
+\lstset{caption=Register}
+\lstinputlisting{src/reg.vhdl}
 
-%\lstset{caption=decoder.vhdl,label=decoder}
-%\lstinputlisting{src/decoder.vhdl}
+\lstset{caption=Register File}
+\lstinputlisting{src/reg_file.vhdl}
 
-%\lstset{caption=Testbench.vhdl,label=testbench}
-%\lstinputlisting{src/Testbench.vhdl}
+\lstset{caption=ALU}
+\lstinputlisting{src/alu.vhdl}
+
+\lstset{caption=Datapath}
+\lstinputlisting{src/datapath.vhdl}
+
 
 
 %\bibliographystyle{plain}

@@ -32,6 +32,9 @@ Entity datapath is
             ALUSrcB       : in t_aluSrcB;
             PCSource      : in t_pcSrc;
             ALUOp         : in t_aluOp;
+            UndefInstrEx  : in std_logic;
+            OverflowEx    : out std_logic;
+            Exception     :in std_logic;
 
     --Memory
             mem_data_out   : in  std_logic_vector((DATA_WIDTH-1) downto 0);
@@ -83,7 +86,8 @@ Architecture datapath_1 of datapath is
                 shamt    : in std_logic_vector(4 downto 0);
                 alu_ctrl : in t_aluOp;
                 f        : out std_logic_vector(31 downto 0);
-                zero     : out std_logic
+                zero     : out std_logic;
+                overflow : out std_logic
             );
     end component alu;
 
@@ -101,11 +105,17 @@ Architecture datapath_1 of datapath is
     signal regb_in        : std_logic_vector((DATA_WIDTH - 1) downto 0);
     signal rega_out       : std_logic_vector((DATA_WIDTH - 1) downto 0);
     signal regb_out       : std_logic_vector((DATA_WIDTH - 1) downto 0);
+    signal epc_out        : std_logic_vector((DATA_WIDTH - 1) downto 0);
+    signal cause_out      : std_logic_vector((DATA_WIDTH - 1) downto 0);
+    signal cause_data     : std_logic_vector((DATA_WIDTH - 1) downto 0);
     signal instr_sext     : std_logic_vector((DATA_WIDTH - 1) downto 0);
     signal instr_sexts    : std_logic_vector((DATA_WIDTH - 1) downto 0);
     signal zero           : std_logic;
+    signal overflow       : std_logic;
+    signal do_cause       : std_logic;
     signal PCWrite_int    : std_logic;
 begin
+    OverflowEx <= overflow;
     RF: reg_file
     port map(
                 clk => clk,
@@ -166,12 +176,37 @@ begin
                 alu_ctrl => ALUOp,
                 f        => alu_reg_in,
                 zero     => zero,
-                shamt    => instruction(10 downto 6)
+                shamt    => instruction(10 downto 6),
+                overflow => overflow
             );
 
-               
+    EPC: reg
+    port map(
+                en     => Exception,
+                data   => PCOUT_int,
+                output => epc_out
+            );              
+
+    do_cause <= UndefInstrEx or overflow;
+    CAUSE: reg
+    port map(
+                en     => do_cause,
+                data   => cause_data,
+                output => cause_out
+            );
+
     mem_write_data <= regb_out;
 
+    CAUSEPROC: process(do_cause)
+    begin
+        if(do_cause='1') then
+            if(UndefInstrEx = '1') then
+                cause_data <= UDEXP;
+            else
+                cause_data <= OVFEXP;
+            end if;
+        end if;
+    end process;
     ---- PC Write/Branch MUX ----
     PCFinal : process(PCWriteCondEq, PCWriteCondNEq, PCWrite)
     begin
@@ -191,6 +226,8 @@ begin
             PCDATA_int <= alu_reg_out;
         elsif(PCSource = PS_JMP) then
             PCDATA_int <= PCOUT_int(31 downto 28) & instruction(25 downto 0) & "00";
+        elsif(PCSource = PS_FOUR) then
+            PCDATA_int <= x"00000004";
         end if;
     end process;
 

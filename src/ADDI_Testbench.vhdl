@@ -42,6 +42,10 @@ Architecture ADDI_Testbench_1 of ADDI_Testbench is
             PCSource      : in t_pcSrc;
             ALUOp         : in t_aluOp;
 
+            UndefInstrEx  : in std_logic;
+            OverflowEx    : out std_logic;
+            Exception     : in std_logic;
+
     --Memory
             mem_data_out   : in  std_logic_vector((DATA_WIDTH-1) downto 0);
             mem_read       : out std_logic;
@@ -64,6 +68,10 @@ Architecture ADDI_Testbench_1 of ADDI_Testbench is
     signal ALUSrcB       : t_aluSrcB;
     signal PCSource      : t_pcSrc;
     signal ALUOp         : t_aluOp;
+
+    signal UndefInstrEx  : std_logic;
+    signal OverflowEx    : std_logic;
+    signal Exception     : std_logic;
 
  --Memory
     signal mem_data_out   : std_logic_vector((DATA_WIDTH-1) downto 0);
@@ -98,6 +106,9 @@ begin
                 ALUSrcB       => ALUSrcB,
                 PCSource      => PCSource,
                 ALUOp         => ALUOp,
+                UndefInstrEx  => UndefInstrEx,
+                OverflowEx    => OverflowEx,
+                Exception     => Exception,
 
                 mem_data_out   => mem_data_out,
                 mem_read       => mem_read,
