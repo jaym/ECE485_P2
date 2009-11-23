@@ -388,7 +388,7 @@ some hard-wired memory address, in this case $0x4$ for simplicity.
   \item ALU does not generate overflow
   \item There is no testbench for exception handling
 \end{enumerate}
-
+Other than that, and a bug with the IR that does not produce any bad results, everything works.
 
 \appendix
 \section{Code}
@@ -403,7 +403,7 @@ numbersep=10pt,                  % how far the line-numbers are from the code
 showspaces=false,               % show spaces adding particular underscores
 showstringspaces=false,         % underline spaces within strings
 showtabs=false,                 % show tabs within strings adding particular underscores
-frame=shadowbox,	                % adds a frame around the code
+frame=none,	                % adds a frame around the code
 tabsize=2,	                % sets default tabsize to 2 spaces
 captionpos=b,                   % sets the caption-position to bottom
 breaklines=true,                % sets automatic line breaking
@@ -426,7 +426,47 @@ breakatwhitespace=false        % sets if automatic breaks should only happen at 
 \lstset{caption=Datapath}
 \lstinputlisting{src/datapath.vhdl}
 
+\lstset{caption=ADDI\_Testbench}
+\lstinputlisting{src/ADDI_Testbench.vhdl}
 
+\lstset{caption=ADD\_Testbench}
+\lstinputlisting{src/ADD_Testbench.vhdl}
+
+\lstset{caption=AND\_Testbench}
+\lstinputlisting{src/AND_Testbench.vhdl}
+
+\lstset{caption=BEQ\_Testbench}
+\lstinputlisting{src/BEQ_Testbench.vhdl}
+
+\lstset{caption=BNEQ\_Testbench}
+\lstinputlisting{src/BNEQ_Testbench.vhdl}
+
+\lstset{caption=IF\_Testbench}
+\lstinputlisting{src/IF_Testbench.vhdl}
+
+\lstset{caption=JAL\_Testbench}
+\lstinputlisting{src/JAL_Testbench.vhdl}
+
+\lstset{caption=J\_Testbench}
+\lstinputlisting{src/J_Testbench.vhdl}
+
+\lstset{caption=LW\_Testbench}
+\lstinputlisting{src/LW_Testbench.vhdl}
+
+\lstset{caption=OR\_Testbench}
+\lstinputlisting{src/OR_Testbench.vhdl}
+
+\lstset{caption=SLL\_Testbench}
+\lstinputlisting{src/SLL_Testbench.vhdl}
+
+\lstset{caption=SLT\_Testbench}
+\lstinputlisting{src/SLT_Testbench.vhdl}
+
+\lstset{caption=SUB\_Testbench}
+\lstinputlisting{src/SUB_Testbench.vhdl}
+
+\lstset{caption=SW\_Testbench}
+\lstinputlisting{src/SW_Testbench.vhdl}
 
 %\bibliographystyle{plain}
 \end{document}
